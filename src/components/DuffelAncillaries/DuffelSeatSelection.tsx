@@ -46,18 +46,16 @@ export const DuffelSeatSelection: React.FC<DuffelSeatSelectionProps> = (props) =
 
   logGroup("Properties passed into the component:", props);
 
-  const [passengers, _setPassengers] = React.useState<CreateOrder["passengers"]>(
-    props.passengers,
-  );
+  const isPropsWithOfferIdForFixture =
+    isDuffelSeatSelectionPropsWithOfferIdForFixture(props);
 
-  const [offer, setOffer] = React.useState<Offer | undefined>(
-    (props as any).offer,
-  );
+  const isPropsWithClientKeyAndOfferId =
+    isDuffelSeatSelectionPropsWithClientKeyAndOfferId(props);
 
+  const [passengers, setPassengers] = React.useState<CreateOrder["passengers"]>(props.passengers,);
+  const [offer, setOffer] = React.useState<Offer | undefined>((props as any).offer,);
   const [isOfferLoading, setIsOfferLoading] = React.useState(true);
-
-  const [seatMaps, setSeatMaps] = React.useState<SeatMap[] | undefined>(undefined);
-
+  const [seatMaps, setSeatMaps] = React.useState<SeatMap[] | undefined>(undefined,);
   const [isSeatMapLoading, setIsSeatMapLoading] = React.useState(true);
 
   const [error, setError] = React.useState<null | string>(null);
@@ -117,22 +115,35 @@ export const DuffelSeatSelection: React.FC<DuffelSeatSelectionProps> = (props) =
       "props.seat_maps?.[0]?.id": (props as any).seat_maps?.[0]?.id,
     });
 
-    retrieveOffer(
-      props.offer_id,
-      props.client_key,
-      setError,
-      setIsOfferLoading,
-      (offer) => {
-        updateOffer(offer);
+    if (isPropsWithClientKeyAndOfferId || isPropsWithOfferIdForFixture) {
+      retrieveOffer(
+        props.offer_id,
+        props.client_key,
+        setError,
+        setIsOfferLoading,
+        (offer) => {
+          updateOffer(offer);
 
-        if (offer.passengers.length !== passengers.length) {
-          throw new Error(
-            `The number of passengers given to \`duffel-ancillaries\` (${props.passengers.length}) doesn't match ` +
-              `the number of passengers on the given offer (${offer.passengers.length}).`,
-          );
-        }
-      },
-    );
+          if (offer.passengers.length !== passengers.length) {
+            throw new Error(
+              `The number of passengers given to \`duffel-ancillaries\` (${props.passengers.length}) doesn't match ` +
+                `the number of passengers on the given offer (${offer.passengers.length}).`,
+            );
+          }
+
+          if (isPropsWithOfferIdForFixture) {
+            // There's no way the component users will know the passenger IDs for the fixture offer
+            // so we'll need to add them here
+            setPassengers(
+              props.passengers.map((passenger, index) => ({
+                ...passenger,
+                id: offer.passengers[index].id,
+              })),
+            );
+          }
+        },
+      );
+    }
 
     retrieveSeatMaps(
       props.offer_id,
@@ -257,3 +268,13 @@ export const DuffelSeatSelection: React.FC<DuffelSeatSelectionProps> = (props) =
     </WithComponentStyles>
   );
 };
+
+const isDuffelSeatSelectionPropsWithOfferIdForFixture = (
+  props: DuffelSeatSelectionProps,
+): props is DuffelSeatSelectionProps =>
+  "offer_id" in props && props.offer_id.startsWith("fixture_");
+
+const isDuffelSeatSelectionPropsWithClientKeyAndOfferId = (
+  props: DuffelSeatSelectionProps,
+): props is DuffelSeatSelectionProps =>
+  "offer_id" in props && "client_key" in props;
