@@ -1,12 +1,11 @@
-import { SeatSelectionStandalone } from "@components/DuffelAncillaries/seats/SeatSelectionStandalone";
+import { CreateOrderServiceWithSeatInformation, SeatSelectionStandalone } from "@components/DuffelAncillaries/seats/SeatSelectionStandalone";
 import { ErrorBoundary } from "@components/shared/ErrorBoundary";
 import { FetchOfferErrorState } from "@components/shared/FetchOfferErrorState";
 import { WithComponentStyles } from "@components/shared/WithComponentStyles";
 import {
   CreateOrder,
-  CreateOrderService,
   Offer,
-  SeatMap,
+  SeatMap
 } from "@duffel/api/types";
 import { compileCreateOrderPayload } from "@lib/compileCreateOrderPayload";
 import { createPriceFormatters } from "@lib/createPriceFormatters";
@@ -17,6 +16,7 @@ import { isPayloadComplete } from "@lib/isPayloadComplete";
 import { initializeLogger, logGroup } from "@lib/logging";
 import { offerIsExpired } from "@lib/offerIsExpired";
 import { retrieveOffer } from "@lib/retrieveOffer";
+import { retrieveSeatMaps } from "@lib/retrieveSeatMaps";
 import * as Sentry from "@sentry/browser";
 import * as React from "react";
 import {
@@ -24,16 +24,14 @@ import {
   DuffelAncillariesMarkup,
   DuffelAncillariesPriceFormatters,
   OnPayloadReady,
-  WithBaggageServiceInformation,
-  WithSeatServiceInformation,
-  WithServiceInformation
+  OnPayloadReadyMetadata
 } from "../../types/DuffelAncillariesProps";
-import { retrieveSeatMaps } from "@lib/retrieveSeatMaps";
 
 export interface DuffelSeatSelectionProps {
   offer_id: string;
   client_key: string;
   styles?: CustomStyles;
+  selectedServices: CreateOrderServiceWithSeatInformation[];
   onPayloadReady: OnPayloadReady;
   passengers: CreateOrder["passengers"];
   markup?: DuffelAncillariesMarkup;
@@ -57,18 +55,7 @@ export const DuffelSeatSelection: React.FC<DuffelSeatSelectionProps> = (props) =
   const [isOfferLoading, setIsOfferLoading] = React.useState(true);
   const [seatMaps, setSeatMaps] = React.useState<SeatMap[] | undefined>(undefined,);
   const [isSeatMapLoading, setIsSeatMapLoading] = React.useState(true);
-
   const [error, setError] = React.useState<null | string>(null);
-
-  const [baggageSelectedServices, _setBaggageSelectedServices] = React.useState<
-    WithBaggageServiceInformation<CreateOrderService>[]
-  >([]);
-  const [seatSelectedServices, setSeatSelectedServices] = React.useState<
-    WithSeatServiceInformation<CreateOrderService>[]
-  >([]);
-  const [cfarSelectedServices, _setCfarSelectedServices] = React.useState<
-    WithServiceInformation<CreateOrderService>[]
-  >([]);
 
   const priceFormatters = createPriceFormatters(
     props.markup,
@@ -164,13 +151,15 @@ export const DuffelSeatSelection: React.FC<DuffelSeatSelectionProps> = (props) =
     (props as any).seat_maps?.[0]?.id,
   ]);
 
-  React.useEffect(() => {
-    if (!offer) return;
+  function triggerOnPayloadReady(seatSelectedServices: CreateOrderServiceWithSeatInformation[]) {
+    if (!offer) {
+      return;
+    }
 
     const createOrderPayload = compileCreateOrderPayload({
-      baggageSelectedServices,
+      baggageSelectedServices: [],
       seatSelectedServices,
-      cfarSelectedServices,
+      cfarSelectedServices: [],
       offer,
       passengers,
       seatMaps,
@@ -182,9 +171,9 @@ export const DuffelSeatSelection: React.FC<DuffelSeatSelectionProps> = (props) =
         offer_total_currency: offer.total_currency,
         offer_tax_amount: offer.tax_amount,
         offer_tax_currency: offer.tax_currency,
-        baggage_services: baggageSelectedServices,
+        baggage_services: [],
         seat_services: seatSelectedServices,
-        cancel_for_any_reason_services: cfarSelectedServices,
+        cancel_for_any_reason_services: [],
       };
 
       logGroup("Payload ready", {
@@ -192,9 +181,12 @@ export const DuffelSeatSelection: React.FC<DuffelSeatSelectionProps> = (props) =
         "Services metadata": metadata,
       });
 
-      props.onPayloadReady(createOrderPayload, metadata);
+      props.onPayloadReady(
+        createOrderPayload, 
+        metadata
+      );
     }
-  }, [baggageSelectedServices, seatSelectedServices, cfarSelectedServices]);
+  }
 
   // There's only one service - seating.
   const serviceCount = 1;
@@ -228,19 +220,6 @@ export const DuffelSeatSelection: React.FC<DuffelSeatSelectionProps> = (props) =
     // that are not part of the css properties type
   } as any;
 
-  const state = {
-    isOfferLoading,
-    isSeatMapLoading,
-    baggageSelectedServices,
-    seatSelectedServices,
-    cfarSelectedServices,
-    offer,
-    seatMaps,
-    error,
-  };
-
-  logGroup("Component's internal state:", state);
-
   return (
     <WithComponentStyles>
       <div style={duffelComponentsStyle}>
@@ -259,8 +238,8 @@ export const DuffelSeatSelection: React.FC<DuffelSeatSelectionProps> = (props) =
               seatMaps={seatMaps}
               offer={offer}
               passengers={passengers}
-              selectedServices={seatSelectedServices}
-              onComplete={setSeatSelectedServices}
+              selectedServices={props.selectedServices}
+              onComplete={triggerOnPayloadReady}
             />
           }
         </ErrorBoundary>

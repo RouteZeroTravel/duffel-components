@@ -17,16 +17,16 @@ import { SeatSelectionModalBody } from "./SeatSelectionModalBody";
 import { SeatSelectionModalFooter } from "./SeatSelectionModalFooter";
 import { SeatSelectionModalHeader } from "./SeatSelectionModalHeader";
 
-type CreateOrderServiceWithInformation =
+export type CreateOrderServiceWithSeatInformation =
   WithSeatServiceInformation<CreateOrderService>;
 
 export interface SeatSelectionStandaloneProps {
   isLoading: boolean
   offer?: Offer;
   seatMaps?: SeatMap[];
-  selectedServices: CreateOrderServiceWithInformation[];
+  selectedServices: CreateOrderServiceWithSeatInformation[];
   passengers: CreateOrder["passengers"];
-  onComplete: (selectedServices: CreateOrderServiceWithInformation[]) => void;
+  onComplete: (selectedServices: CreateOrderServiceWithSeatInformation[]) => void;
 }
 
 export const SeatSelectionStandalone: React.FC<SeatSelectionStandaloneProps> = ({
@@ -35,7 +35,7 @@ export const SeatSelectionStandalone: React.FC<SeatSelectionStandaloneProps> = (
   passengers,
   seatMaps,
   selectedServices,
-  onComplete: onClose,
+  onComplete,
 }) => {
   if (isLoading) {
     return <div/>;
@@ -45,10 +45,10 @@ export const SeatSelectionStandalone: React.FC<SeatSelectionStandaloneProps> = (
     React.useState(0);
 
   const [selectedServicesState, setSelectedServicesState] =
-    React.useState<CreateOrderServiceWithInformation[]>(selectedServices);
+    React.useState<CreateOrderServiceWithSeatInformation[]>(selectedServices);
   const selectedServicesStateMap = selectedServicesState.reduce(
     (all, service) => ({ ...all, [service.id]: service }),
-    {} as Record<string, CreateOrderServiceWithInformation>,
+    {} as Record<string, CreateOrderServiceWithSeatInformation>,
   );
 
   if (!offer || !seatMaps) return null;
@@ -76,9 +76,9 @@ export const SeatSelectionStandalone: React.FC<SeatSelectionStandaloneProps> = (
   );
 
   const onSeatToggle = (
-    seatServiceToToggle: CreateOrderServiceWithInformation,
+    seatServiceToToggle: CreateOrderServiceWithSeatInformation,
   ) => {
-    let newSeatServices = new Array<CreateOrderServiceWithInformation>();
+    let newSeatServices = new Array<CreateOrderServiceWithSeatInformation>();
 
     for (const selectedServiceFromState of selectedServicesState) {
       const hasClickedSeatToToggleOff =
@@ -145,7 +145,7 @@ export const SeatSelectionStandalone: React.FC<SeatSelectionStandaloneProps> = (
         onPreviousSegmentButtonClicked={() => {
           setCurrentPermutationIndex(currentPermutationIndex - 1);
         }}
-        onClose={() => onClose(selectedServicesState)}
+        onClose={() => onComplete(selectedServicesState)}
       />
     </div>
   );
