@@ -13,6 +13,10 @@ module.exports = {
       out: "duffel-card-form",
       in: "src/components/DuffelCardForm/DuffelCardFormCustomElement.tsx",
     },
+    {
+      out: "duffel-seating",
+      in: "src/components/DuffelAncillaries/DuffelSeatSelectionCustomElement.tsx",
+    }
     // Created a new custom element wrapper for a components
     // and want to make it available on the CDN? Add it here.
   ],
