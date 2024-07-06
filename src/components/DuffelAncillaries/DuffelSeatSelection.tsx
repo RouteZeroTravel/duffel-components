@@ -200,6 +200,7 @@ export const DuffelSeatSelection: React.FC<DuffelSeatSelectionProps> = (props) =
     // before the css is loaded duet to the missing "row gap".
     display: "flex",
     width: "100%",
+    height: "100vh",
     flexDirection: "column",
     rowGap: "12px",
     ...(props.styles?.accentColor && {
@@ -230,7 +231,6 @@ export const DuffelSeatSelection: React.FC<DuffelSeatSelectionProps> = (props) =
               message={error}
             />
           )}
-
           {!error &&
             <SeatSelectionStandalone
               key="seats"

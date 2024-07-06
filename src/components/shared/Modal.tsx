@@ -38,12 +38,14 @@ export const Modal: React.FC<ModalProps> = ({ children, onClose, isOpen }) => {
 interface ModalBodyProps {
   tall?: boolean;
   noPadding?: boolean;
+  expandFlex?: boolean;
   children: React.ReactNode;
 }
 export const ModalBody: React.FC<ModalBodyProps> = ({
   children,
   tall,
   noPadding,
+  expandFlex
 }) => (
   <div
     className={classNames(
@@ -51,6 +53,9 @@ export const ModalBody: React.FC<ModalBodyProps> = ({
       noPadding && "modal-body--no-padding",
       tall && "modal-body--tall",
     )}
+    style={{
+      ...expandFlex && { flexGrow: 1, flexBasis: 0 }
+    }}
   >
     {children}
   </div>

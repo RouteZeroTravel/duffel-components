@@ -20,7 +20,7 @@ export const SeatSelectionModalHeader: React.FC<
   currentPassengerName,
   setCurrentSegmentAndPassengerPermutationsIndex,
 }) => (
-  <div style={{ padding: "24px 24px 16px" }}>
+  <div style={{ paddingBottom: "16px" }}>
     {segmentAndPassengerPermutationsCount > 1 && (
       <div style={{ display: "flex", columnGap: "4px" }}>
         {Array(segmentAndPassengerPermutationsCount)

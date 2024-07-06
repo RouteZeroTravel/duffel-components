@@ -1,5 +1,12 @@
 # @duffel/components
 
+Updating version used by RouteZero:
+
+1. Run `./scripts/build-and-publish.sh`
+2. Copy `cdn-dist/duffel-seating.js` and `global.css` into RZ project.
+
+----
+
 This package is a component library to help you build your travel product using the [Duffel API](https://duffel.com/docs).
 
 ## Getting started

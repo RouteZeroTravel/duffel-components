@@ -44,7 +44,7 @@ export const SeatSelectionModalFooter: React.FC<
   const isOneWay = isFirstSegment && isLastSegment;
 
   return (
-    <div style={{ padding: "16px 24px 24px" }}>
+    <div style={{ paddingTop: "16px" }}>
       <div className="flex--space-between">
         <div>Price for {withPlural(totalQuantity, "seat", "seats")}</div>
         <div className="h3--semibold">+ {totalAmountLabel}</div>

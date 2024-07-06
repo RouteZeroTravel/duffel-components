@@ -110,7 +110,11 @@ export const SeatSelectionStandalone: React.FC<SeatSelectionStandaloneProps> = (
     getCurrencyForSeatMaps(seatMaps) ?? offer.total_currency;
 
   return (
-    <div>
+    <div style={{
+      display: "flex",
+      flexDirection: "column",
+      height: "100%"
+    }}>
       <SeatSelectionModalHeader
         segmentAndPassengerPermutationsCount={
           segmentAndPassengerPermutations.length
@@ -129,6 +133,8 @@ export const SeatSelectionStandalone: React.FC<SeatSelectionStandaloneProps> = (
         currentPassengerId={currentPassengerId}
         currentPassengerName={currentPassengerName}
         currentSegmentId={currentSegmentId}
+        // Grow to take up all remaining space
+        expandFlex={true}
       />
       <SeatSelectionModalFooter
         seatMaps={seatMaps}
