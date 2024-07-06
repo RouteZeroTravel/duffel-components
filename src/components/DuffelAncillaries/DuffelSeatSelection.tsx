@@ -217,6 +217,12 @@ export const DuffelSeatSelection: React.FC<DuffelSeatSelectionProps> = (props) =
     ...(props.styles?.buttonCornerRadius && {
       "--BUTTON-RADIUS": props.styles.buttonCornerRadius,
     }),
+    ...(props.styles?.sidesPadding && {
+      "--SIDES-PADDING": props.styles.sidesPadding,
+    }),
+    ...(props.styles?.infoCardMargin && {
+      "--INFO-CARD-MARGIN": props.styles.infoCardMargin
+    })
     // `as any` is needed here is needed because we want to set css variables
     // that are not part of the css properties type
   } as any;

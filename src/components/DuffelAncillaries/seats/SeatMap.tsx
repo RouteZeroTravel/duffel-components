@@ -85,6 +85,7 @@ export const SeatMap: React.FC<SeatMapProps> = ({
           ))}
         </div>
       ))}
+      <div className="seat-map-bottom-padding"></div>
     </div>
   );
 };

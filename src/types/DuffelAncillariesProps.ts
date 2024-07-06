@@ -88,6 +88,10 @@ export interface CustomStyles {
   accentColor?: string;
   buttonCornerRadius?: string;
   fontFamily?: string;
+  /** Padding from the sides of the screen */
+  sidesPadding?: string
+  /** Margin from the seat info card to the footer */
+  infoCardMargin?: string
 }
 
 export type OnPayloadReady = (

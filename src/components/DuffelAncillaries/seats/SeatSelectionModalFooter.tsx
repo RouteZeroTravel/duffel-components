@@ -45,7 +45,7 @@ export const SeatSelectionModalFooter: React.FC<
 
   return (
     <div style={{ paddingTop: "16px" }}>
-      <div className="flex--space-between">
+      <div className="flex--space-between" style={{ padding: "0px var(--SIDES-PADDING)" }}>
         <div>Price for {withPlural(totalQuantity, "seat", "seats")}</div>
         <div className="h3--semibold">+ {totalAmountLabel}</div>
       </div>

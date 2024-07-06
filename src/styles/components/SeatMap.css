@@ -22,3 +22,13 @@
   width: min-content;
   margin: 0 var(--SPACING-SM-2);
 }
+
+/** 
+ * Added to the bottom of the seat map to ensure the user can still scroll to
+ * the bottom of the map even if the SeatInfo is showing.
+ */
+.seat-map-bottom-padding {
+  width: 100%;
+  /* 108px is height of footer */
+  height: calc(108px + var(--INFO-CARD-MARGIN));
+}

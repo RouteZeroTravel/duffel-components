@@ -1,5 +1,4 @@
 .seat-info {
-  --INFO-CARD-MARGIN: 20px;
   background-color: rgb(var(--WHITE));
   padding: 24px;
   padding-bottom: 24px;
@@ -13,9 +12,8 @@
   width: calc(100% - 2 * var(--INFO-CARD-MARGIN));
   left: var(--INFO-CARD-MARGIN);
   box-sizing: border-box;
-
-  /* 124px because that's the footer height */
-  bottom: calc(124px + var(--INFO-CARD-MARGIN));
+  /* 108px is height of footer */
+  bottom: calc(108px + var(--INFO-CARD-MARGIN));
 }
 
 /* tablet or greater  */

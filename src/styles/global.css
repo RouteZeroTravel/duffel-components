@@ -50,6 +50,7 @@
 .duffel-components {
   --BUTTON-RADIUS: 5px;
   --TRANSITION-CUBIC-BEZIER: cubic-bezier(0.25, 0.8, 0.25, 1);
+  --INFO-CARD-MARGIN: 20px;
 
   box-sizing: border-box;
   -webkit-overflow-scrolling: touch;
