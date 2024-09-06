@@ -51,10 +51,19 @@ class DuffelSeatSelectionCustomElement extends HTMLElement {
     this.root.render(
       <DuffelSeatSelection
         {...withProps}
+        onLoaded={() => {
+          this.dispatchEvent(
+            new CustomEvent("onLoaded", {
+              // Propagate from shadow dom to standard dom
+              composed: true,
+            }),
+          );
+        }}
         onPayloadReady={(data, metadata) => {
           this.dispatchEvent(
             new CustomEvent("onPayloadReady", {
               detail: { data, metadata },
+              // Propagate from shadow dom to standard dom
               composed: true,
             }),
           );
@@ -69,46 +78,3 @@ window.customElements.get(CUSTOM_ELEMENT_TAG) ||
     CUSTOM_ELEMENT_TAG,
     DuffelSeatSelectionCustomElement,
   );
-
-function tryToGetDuffelSeatSelectionCustomElement(
-  caller: string,
-): DuffelSeatSelectionCustomElement {
-  const element =
-    document.querySelector<DuffelSeatSelectionCustomElement>(CUSTOM_ELEMENT_TAG);
-  if (!element) {
-    throw new Error(
-      `Could not find duffel-seating element in the DOM. Maybe you need to call ${caller} after 'window.onload'?`,
-    );
-  }
-  return element;
-}
-
-export function renderDuffelSeatSelectionCustomElement(
-  props: DuffelSeatSelectionStandaloneCustomElementRenderArguments,
-) {
-  const element = tryToGetDuffelSeatSelectionCustomElement(
-    "renderDuffelSeatSelectionCustomElement",
-  );
-  element.render(props);
-}
-
-type OnPayloadReadyCustomEvent = CustomEvent<{
-  data: CreateOrder;
-  metadata: OnPayloadReadyMetadata;
-}>;
-
-export function onDuffelSeatSelectionPayloadReady(
-  onPayloadReady: OnPayloadReady,
-) {
-  const element = tryToGetDuffelSeatSelectionCustomElement(
-    "onDuffelSeatSelectionPayloadReady",
-  );
-  const eventListener = (event: OnPayloadReadyCustomEvent) => {
-    onPayloadReady(event.detail.data, event.detail.metadata);
-  };
-
-  // using `as EventListener` here because typescript doesn't know the event type for `onPayloadReady`
-  // There's a few different suggestions to resolve this seemed good enough
-  // You can learn more here: https://github.com/microsoft/TypeScript/issues/28357
-  element.addEventListener("onPayloadReady", eventListener as EventListener);
-}

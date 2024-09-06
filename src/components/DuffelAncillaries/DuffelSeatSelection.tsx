@@ -24,14 +24,16 @@ import {
   DuffelAncillariesMarkup,
   DuffelAncillariesPriceFormatters,
   OnPayloadReady,
-  OnPayloadReadyMetadata
 } from "../../types/DuffelAncillariesProps";
+
+export type OnLoaded = () => void;
 
 export interface DuffelSeatSelectionProps {
   offer_id: string;
   client_key: string;
   styles?: CustomStyles;
   selectedServices: CreateOrderServiceWithSeatInformation[];
+  onLoaded: OnLoaded;
   onPayloadReady: OnPayloadReady;
   passengers: CreateOrder["passengers"];
   markup?: DuffelAncillariesMarkup;
@@ -138,7 +140,9 @@ export const DuffelSeatSelection: React.FC<DuffelSeatSelectionProps> = (props) =
       () => updateSeatMaps([]),
       setIsSeatMapLoading,
       updateSeatMaps,
-    );
+    ).then(() => {
+      props.onLoaded();
+    });
   }, [
     // `as any` is needed here because the list
     // of dependencies is different for each combination of props.
