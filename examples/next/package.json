@@ -9,8 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@duffel/components": "3.1.5",
-    "next": "14.1.1",
+    "@duffel/components": "3.7.23",
+    "next": "14.2.21",
     "react": "^18",
     "react-dom": "^18"
   },

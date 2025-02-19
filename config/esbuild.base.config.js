@@ -16,7 +16,11 @@ module.exports = {
     {
       out: "duffel-seating",
       in: "src/components/DuffelAncillaries/DuffelSeatSelectionCustomElement.tsx",
-    }
+    },
+    {
+      out: "createThreeDSecureSession",
+      in: "src/functions.ts",
+    },
     // Created a new custom element wrapper for a components
     // and want to make it available on the CDN? Add it here.
   ],
